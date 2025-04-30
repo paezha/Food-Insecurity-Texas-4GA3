@@ -1,0 +1,12 @@
+
+	Moran I test under randomisation
+
+data:  model.sem1$residuals  
+weights: df_race_c.w    
+
+Moran I statistic standard deviate = -4.947, p-value = 3.769e-07
+alternative hypothesis: less
+sample estimates:
+Moran I statistic       Expectation          Variance 
+    -3.960006e-02     -1.471670e-04      6.360299e-05 
+
