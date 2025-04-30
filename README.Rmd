@@ -44,20 +44,22 @@ library(readxl) # package to read external data, like csv and text files
 library(sf) # package for working with geospatial data in simple features format
 library(sp) # package for working with spatial data, including utilities to create spatial weights matrices, etc.
 library(spdep) # package for spatial regression analysis
-library(stargazer) # package for creating tables with output of models 
+library(spatialreg) # Spatial Regression Analysis
+library(stargazer) # Well-Formatted Regression and Summary Statistics Tables # package for creating tables with output of models 
 library(tidyverse) # family of packages for data manipulation, analysis, and visualization (includes `ggplot2`)
 library(tigris) # package `tigris` which includes boundary and other geography files for the US:
 library(plotly) # package for interactive plotting
-library(knitr)
-library(tinytex)
-library(stargazer)
-library(textreg)
+library(knitr) # A General-Purpose Package for Dynamic Report Generation in R
+library(stargazer) # Well-Formatted Regression and Summary Statistics Tables
+library(textreg) # n-Gram Text Regression, aka Concise Comparative Summarization
 library(viridis) #Viridis colour scheme for mapping
-library(tidycensus)
+library(tidycensus) # Load US Census Boundary and Attribute Data as 'tidyverse' and 'sf'-Ready Data Frames
 ```
 
 ```{r, include=FALSE}
-df_race <- readRDS(glue::glue(here::here(), "/data/df_race.rds"))
+# Check notebook 00-Retrieve-Data.Rmd in folder data for the process of creating these data objects
+load(glue::glue(here::here(), "/data/df_race.rda"))
+load(glue::glue(here::here(), "/data/df_race_c.rda"))
 ```
 
 \newpage
@@ -130,20 +132,9 @@ Grummon and Taillie (2018) found that even with SNAP participation, there are st
 
   Food insecurity was studied at the tract level in the state of Texas (see Figure 1). There are 6896 tracts in the state, and each of these tracts was used in the analysis. In the U.S., around 11.1% of households experience food insecurity. Texas faces higher rates, with 14% of families identifying as food insecure in 2018 (Coleman-Jensen et al. 2019). The state was selected for this reason, having a higher rate of food insecurity in the country. Many studies conducted in Texas have detailed the relationship between food insecurity and other variables. A study by Beaulac et al. (2009) found that food access in the U.S. is significantly impacted by income and race. This study was conducted to analyze the spatial patterns between these variables and discuss the potential reasons for them.
 
-```{r, include=FALSE}
-options(tigris_use_cache = TRUE)
-
-tx_tracts <- get_decennial(geography = "tract",
-                           variables = "H1_001N",
-                           state = "Texas",
-                           year = 2020,
-                           geometry = TRUE
-)
-```
-
 ```{r, echo=FALSE}
 ggplot() +
-  geom_sf(data = tx_tracts,
+  geom_sf(data = df_race,
           fill = "lightgrey") +
   theme_bw() +
   labs(title = "Map of Texas, United States Tracts")
@@ -275,7 +266,6 @@ df_race.nb <- poly2nb(df_race_filter) # Setting up the neighbhourhood function
 
 df_race.w <- nb2listw(df_race.nb) # Creating the weighted matrix 
 ```
-
 
 ```{r, echo=FALSE}
 # Spatial Moving Averages for Food Stamp Usage 
@@ -412,6 +402,7 @@ ggplot(df_race_filter) +
   theme_bw() +
   labs(title = "Gi* Hotspot Analysis of Food Stamp Usage")
 ```
+
 ``` {r, echo=FALSE}
 # Local G on Null Landscape
 foodstamps_g_null <- localG(df_race_filter$food_stamp_random, df_race.w)
@@ -527,7 +518,34 @@ The Gi* analysis reveals statistically significant spatial clustering in food st
 
 A Spatial Error Model was employed to account for residual spatial dependence. The results for this specification are outlined in the table below: 
 
-![regression](figures/screenshot.png)
+```{r, include=FALSE}
+#spatial weights matrix 
+coords <- CT_centroids <- df_race_c |>
+  st_centroid() |> 
+  st_coordinates()
+
+nb <- knn2nb(knearneigh(coords, k = 4))
+df_race_c.w <- nb2listw(nb, style = "W")
+
+```
+
+```{r, echo=FALSE}
+#add zero policy to deal with missing neighbors 
+model.sem1 <- errorsarlm(
+  food_stamp_p ~ other_p + black_p + asian_p + 
+    american_indian_p + pacific_islander_p + 
+    income + children_p + unemployment_rate,
+  data = df_race_c,
+  listw = df_race_c.w,
+  zero.policy = TRUE)
+
+#summary(model.sem1)
+```
+
+```{r echo=FALSE, warning=FALSE, results="asis"}
+stargazer(model.sem1, 
+          type = "html")
+```
 
 The Spatial Error Model (SEM) reveals statistically significant relationships between food stamp usage and racial composition across Texas census tracts. Because the per capita proportions for all race groups must sum to 1.00, the White race category was excluded from the regression to avoid multicollinearity. Therefore, “White” serves as the reference group. 
 
@@ -539,13 +557,40 @@ The SEM’s spatial error coefficient is $\lambda$ = 0.53 (p < 0.001), indicatin
 
 ### Tests for Spatial Indepedence 
 
-To confirm that we’ve successfully removed residual spatial autocorrelation in the SEM specification, a Moran’s I test on the residuals was employed.The result of Moran’s I = –0.0396 (p < 0.0001) reveals a slight negative autocorrelation that is highly significant. This demonstrates that the SEM specification has successfully absorbed spatial dependence in the residuals, thus validating the reliability of our regression coefficients. These results are illustrated below, with the Morans I test and a map of the spatially independent residuals. 
+To confirm that we’ve successfully removed residual spatial autocorrelation in the SEM specification, a Moran’s I test on the residuals was employed.The result of Moran’s I = –0.341 (p = 1), which does not allow us to reject the null hypothesis of independence. This suggests that the SEM specification has successfully absorbed spatial dependence in the residuals, thus validating the reliability of our regression coefficients. These results are illustrated below, with the Morans I test and a map of the spatially independent residuals. 
 
-```{r, results='asis', echo = FALSE}
-cat(readLines(glue::glue(here::here(), "/data/morans_i_test_output.txt")), sep = "\n")
+```{r, echo=FALSE}
+# Extract the residuals of the model
+df_race_c$r_sem <- residuals(model.sem1)
+
+# Lagged residuals
+l_res_sem <- lag.listw(df_race_c.w, df_race_c$r_sem)
+
+# Test
+moran_result <- moran.test(l_res_sem, df_race_c.w, alternative = "less")
 ```
 
-![Sem Map Res](figures/sem_r_map.png)
+```{r, echo=FALSE}
+ggplot(df_race_c) +
+  geom_sf(aes(fill = l_res_sem > 0), color = "white", size = 0.2) +
+  scale_fill_manual(
+    values = c("FALSE" = "#2166ac", "TRUE" = "#b2182b"),
+    name = "Residual > 0",
+    labels = c("No", "Yes")
+  ) +
+  labs(
+    title = "SEM Residuals",
+    fill = "Residual > 0"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14),
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 9)
+  )
+```
+
+
 
 Together, these results reveal a strong relationship between race and food stamp usage across Texas census tracts. Relative to the White population (which serves as the reference group), areas with a higher proportion of Black residents show the largest increase in food stamp usage. Therefore, communities with a high percentage of Black residents experience a disproportionately larger reliance on SNAP compared to any other race group. Similarly, tracts with a greater share of residents classified in the "other" racial category also show higher food stamp usage than White census tracts, though this relationship is slightly weaker than it is for Black communities. In contrast, tracts with a greater proportion of Asian residents actually show lower food stamp usage compared to White tracts. The coefficients for American Indian and Pacific Islander groups are not statistically significant, and so these coefficients are not directly interpretable. Additionally, the control variables follow expected patterns. A higher median household income is associated with lower food stamp use, while greater unemployment and a greater share of households with children correspond with increased food stamp usage. 
 

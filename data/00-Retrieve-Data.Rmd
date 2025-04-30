@@ -1,0 +1,333 @@
+---
+title: "Data preprocessing"
+date: "2025-03-25"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+rm(list = ls())
+```
+
+Make sure to run "install.packages("renv")" in the console, and then run "renv::restore()" to retrieve the packages needed to run these markdown files - this ensures that we are all using the same packages
+
+```{r, message = FALSE}
+library(tidycensus)
+library(knitr)
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+
+```{r}
+# Sys.getenv("CENSUS_API_KEY")
+```
+
+```{r}
+#Run this chunk to view the vars within tidycensus 
+viewvars <- load_variables(2023, "acs5", cache = TRUE)
+view(viewvars)
+```
+
+
+#Testing
+```{r}
+#load in the needed variables from tidy census 
+texas_total_pop <- get_acs(
+  state = "Texas",
+  geography = "county",
+  variables = "B02001_001",
+  geometry = TRUE,
+  output = "wide",
+  year = 2022)
+```
+
+```{r}
+ggplot(texas_total_pop, aes(fill = B02001_001E)) + 
+  geom_sf() + 
+  theme_void() +
+  scale_fill_viridis_c(option = "turbo") 
+```
+
+```{r}
+texas_food_stamps <- get_acs(
+  state = "Texas",
+  geography = "county",
+  variables = "B22003_002",
+  geometry = TRUE,
+  output = "wide",
+  year = 2022)
+```
+
+```{r}
+ggplot(texas_food_stamps, aes(fill = B22003_002E)) + 
+  geom_sf() + 
+  theme_void() +
+  scale_fill_viridis_c(option = "turbo") 
+```
+
+```{r}
+houston_pop <- get_acs(
+  state = "Texas",
+  county = "Harris County",
+  geography = "tract",
+  variables = "B02001_001",
+  geometry = TRUE,
+  output = "wide",
+  year = 2022)
+
+# c("Austin County", "Brazoria County", "Chambers County", "Fort Bend County", "Galveston County", "Harris County", "Liberty County", "Montgomery County", "Waller County")
+```
+
+
+```{r}
+ggplot(houston_pop, aes(fill = B02001_001E), (size = 0.00001)) + 
+  geom_sf() + 
+  theme_void() +
+  scale_fill_viridis_c(option = "turbo") 
+```
+
+```{r}
+houston_food_stamps <- get_acs(
+  state = "Texas",
+  county = "Harris County",
+  geography = "tract",
+  variables = "B22003_002",
+  geometry = TRUE,
+  output = "wide",
+  year = 2022)
+
+# c("Austin County", "Brazoria County", "Chambers County", "Fort Bend County", "Galveston County", "Harris County", "Liberty County", "Montgomery County", "Waller County")
+```
+
+```{r}
+ggplot(houston_food_stamps, aes(fill = B22003_002E), (size = 0.00001)) + 
+  geom_sf() + 
+  theme_void() +
+  scale_fill_viridis_c(option = "turbo") 
+```
+
+#Create Dataframe
+
+##Load in the data: 
+
+```{r}
+#median household income
+income <- get_acs(
+ state = "Texas",
+  geography = "tract",
+  variables = "B19013_001",
+  geometry = TRUE,
+  output = "wide",
+  year = 2022)
+```
+
+
+```{r}
+unemployed <- get_acs(
+ state = "Texas",
+  geography = "tract",
+  variables = "B23025_005",
+  geometry = TRUE,
+  output = "wide",
+  year = 2022)
+```
+
+```{r}
+lf <- get_acs(
+ state = "Texas",
+  geography = "tract",
+  variables = "B23025_003",
+  geometry = TRUE,
+  output = "wide",
+  year = 2022)
+```
+
+```{r}
+children <- get_acs(
+ state = "Texas",
+  geography = "tract",
+  variables = "B11003_001",
+  geometry = TRUE,
+  output = "wide",
+  year = 2022)
+```
+
+
+```{r}
+food_stamps <- get_acs(
+ state = "Texas",
+  geography = "tract",
+  variables = "B22003_002",
+  geometry = TRUE,
+  output = "wide",
+  year = 2022)
+```
+
+```{r}
+white <- get_acs(
+  state = "Texas",
+  geography = "tract",
+  variables = "B02001_002",
+  geometry = TRUE,
+  output = "wide",
+  year = 2022)
+```
+
+```{r}
+black<- get_acs(
+  state = "Texas",
+  geography = "tract",
+  variables = "B02001_003",
+  geometry = TRUE,
+  output = "wide",
+  year = 2022)
+```
+
+```{r}
+asian <- get_acs(
+  state = "Texas",
+  geography = "tract",
+  variables = "B02001_005",
+  geometry = TRUE,
+  output = "wide",
+  year = 2022)
+```
+
+```{r}
+american_indian_alaska_native <- get_acs(
+  state = "Texas",
+  geography = "tract",
+  variables = "B02001_004",
+  geometry = TRUE,
+  output = "wide",
+  year = 2022)
+```
+
+```{r}
+pacific_islander <- get_acs(
+  state = "Texas",
+  geography = "tract",
+  variables = "B02001_006",
+  geometry = TRUE,
+  output = "wide",
+  year = 2022)
+```
+
+```{r}
+other_race <- get_acs(
+  state = "Texas",
+  geography = "tract",
+  variables = "B02001_007",
+  geometry = TRUE,
+  output = "wide",
+  year = 2022)
+```
+
+```{r}
+#Rename columns for simplicity 
+names(food_stamps)[3] <- "food_stamp"
+names(white)[3] <- "white"
+names(black)[3] <- "black"
+names(asian)[3] <- "asian"
+names(american_indian_alaska_native)[3] <- "american_indian"
+names(pacific_islander)[3] <- "pacific_islander"
+names(other_race)[3] <- "other"
+names(income)[3] <- "income"
+names(children)[3] <- "children"
+names(lf)[3] <- "lf"
+names(unemployed)[3] <- "unemployed"
+```
+
+##Merge
+```{r}
+#Merge
+df_race <- white |>
+mutate(     
+    black = black$black,
+    asian = asian$asian,
+    american_indian = american_indian_alaska_native$american_indian,
+    pacific_islander = pacific_islander$pacific_islander,
+    other = other_race$other, 
+    food_stamp = food_stamps$food_stamp, 
+    children = children$children,
+    lf = lf$lf, 
+    unemployed = unemployed$unemployed, 
+    income = income$income)
+```
+
+```{r}
+#remove uneeded column 
+df_race <- df_race[, -4]
+```
+
+```{r}
+#create a total population column
+df_race <- df_race |>
+  mutate(
+    total_pop = (black + asian + white + american_indian + pacific_islander + other)
+  )
+```
+
+##Per capita populations
+
+```{r}
+df_race <- df_race |>
+  mutate(
+    white_p = white/total_pop,
+    black_p = black/total_pop,
+    asian_p = asian/total_pop,
+    american_indian_p = american_indian/total_pop,
+    pacific_islander_p = pacific_islander/total_pop,
+    other_p = other/total_pop,
+    food_stamp_p = food_stamp/total_pop
+)
+```
+
+```{r}
+#This dataframe contains several control variables for regressions 
+df_race_c <- df_race |>
+  mutate(
+    white_p = white/total_pop,
+    black_p = black/total_pop,
+    asian_p = asian/total_pop,
+    american_indian_p = american_indian/total_pop,
+    pacific_islander_p = pacific_islander/total_pop,
+    other_p = other/total_pop,
+    food_stamp_p = food_stamp/total_pop,
+    unemployment_rate = unemployed/lf,
+    children_p = children/total_pop,
+    non_white_p = 1 - white_p)
+```
+
+```{r}
+df_race_c <- na.omit(df_race_c[, c("geometry", "food_stamp_p", "other_p", "white_p","black_p", "asian_p","american_indian_p", "pacific_islander_p","income", "children_p", "unemployment_rate", "non_white_p")])
+```
+
+#Save: 
+```{r}
+save(df_race, file = glue::glue(here::here(), "/data/df_race.rda"), compress = "bzip2")
+save(df_race_c, file = glue::glue(here::here(), "/data/df_race_c.rda"), compress = "bzip2")
+```
+
+
+Tidycensus variables: 
+
+Total population
+B02001_001 (or B01003_001)
+White population
+B02001_002
+Black population
+B02001_003
+Asian population
+B02001_005
+American Indian and Alaska Native population
+B02001_004
+Native Hawaiian or other pacific islander population
+B02001_006
+Some other race: 
+B02001_007
+
+Exclusions: Two or more races

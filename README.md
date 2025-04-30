@@ -316,7 +316,7 @@ significantly impacted by income and race. This study was conducted to
 analyze the spatial patterns between these variables and discuss the
 potential reasons for them.
 
-![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 # Data
 
@@ -452,6 +452,8 @@ estimates.
 
 ## Descriptive Statistics
 
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
 ![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
@@ -464,19 +466,19 @@ estimates.
 
 ![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
-![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
-
 ## Spatial Statistics
 
 ### Chloropleth Visualization of Food Stamp Usage in Texas
 
-![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ### Spatial Moving Averages
 
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
 ![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
-![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 ![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
@@ -485,8 +487,6 @@ estimates.
 ![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 ![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
-
-![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 The Spatial Moving Average (SMA) map for food stamp usage reveals a
 clear spatial clustering pattern, particularly concentrated in the
@@ -515,11 +515,13 @@ would require more rigorous statistical testing to confirm.
 
 ### Local G
 
-![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
-![](README_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 ### Gi\* for Each Race
+
+![](README_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
 ![](README_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
 
@@ -530,8 +532,6 @@ would require more rigorous statistical testing to confirm.
 ![](README_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
 ![](README_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
-
-![](README_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
 The Gi\* analysis reveals statistically significant spatial clustering
 in food stamp usage and racial group distributions across Texas. For
@@ -587,10 +587,289 @@ A Spatial Error Model was employed to account for residual spatial
 dependence. The results for this specification are outlined in the table
 below:
 
-<figure>
-<img src="figures/screenshot.png" alt="regression" />
-<figcaption aria-hidden="true">regression</figcaption>
-</figure>
+<table style="text-align:center">
+<tr>
+<td colspan="2" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+<em>Dependent variable:</em>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td colspan="1" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+food_stamp_p
+</td>
+</tr>
+<tr>
+<td colspan="2" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+other_p
+</td>
+<td>
+0.037<sup>\*\*\*</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.005)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+black_p
+</td>
+<td>
+0.057<sup>\*\*\*</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.004)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+asian_p
+</td>
+<td>
+-0.018<sup>\*\*\*</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.007)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+american_indian_p
+</td>
+<td>
+-0.014
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.028)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+pacific_islander_p
+</td>
+<td>
+-0.090
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.070)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+income
+</td>
+<td>
+-0.00000<sup>\*\*\*</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.00000)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+children_p
+</td>
+<td>
+0.197<sup>\*\*\*</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.008)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+unemployment_rate
+</td>
+<td>
+0.133<sup>\*\*\*</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.011)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Constant
+</td>
+<td>
+0.027<sup>\*\*\*</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.003)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td colspan="2" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Observations
+</td>
+<td>
+6,796
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Log Likelihood
+</td>
+<td>
+13,057.200
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+sigma<sup>2</sup>
+</td>
+<td>
+0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Akaike Inf. Crit.
+</td>
+<td>
+-26,092.390
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Wald Test
+</td>
+<td>
+1,797.760<sup>\*\*\*</sup> (df = 1)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+LR Test
+</td>
+<td>
+1,276.342<sup>\*\*\*</sup> (df = 1)
+</td>
+</tr>
+<tr>
+<td colspan="2" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+<em>Note:</em>
+</td>
+<td style="text-align:right">
+<sup>*</sup>p\<0.1; <sup>**</sup>p\<0.05; <sup>***</sup>p\<0.01
+</td>
+</tr>
+</table>
 
 The Spatial Error Model (SEM) reveals statistically significant
 relationships between food stamp usage and racial composition across
@@ -624,26 +903,14 @@ the SEM outperforms OLS with a much lower AIC (–26,092 vs. –24,818).
 
 To confirm that we’ve successfully removed residual spatial
 autocorrelation in the SEM specification, a Moran’s I test on the
-residuals was employed.The result of Moran’s I = –0.0396 (p \< 0.0001)
-reveals a slight negative autocorrelation that is highly significant.
-This demonstrates that the SEM specification has successfully absorbed
-spatial dependence in the residuals, thus validating the reliability of
-our regression coefficients. These results are illustrated below, with
-the Morans I test and a map of the spatially independent residuals.
+residuals was employed.The result of Moran’s I = –0.341 (p = 1), which
+does not allow us to reject the null hypothesis of independence. This
+suggests that the SEM specification has successfully absorbed spatial
+dependence in the residuals, thus validating the reliability of our
+regression coefficients. These results are illustrated below, with the
+Morans I test and a map of the spatially independent residuals.
 
-    Moran I test under randomisation
-
-data: model.sem1\$residuals  
-weights: df_race_c.w
-
-Moran I statistic standard deviate = -4.947, p-value = 3.769e-07
-alternative hypothesis: less sample estimates: Moran I statistic
-Expectation Variance -3.960006e-02 -1.471670e-04 6.360299e-05
-
-<figure>
-<img src="figures/sem_r_map.png" alt="Sem Map Res" />
-<figcaption aria-hidden="true">Sem Map Res</figcaption>
-</figure>
+![](README_files/figure-gfm/unnamed-chunk-39-1.png)<!-- -->
 
 Together, these results reveal a strong relationship between race and
 food stamp usage across Texas census tracts. Relative to the White
